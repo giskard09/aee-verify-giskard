@@ -25,17 +25,27 @@ the verifier itself.
 - `result` recompute as the byte-pure minimum of the three independent
   conditions (fail-closed row membership / disclosed coverage gap / indirect
   clean row), read only from required row members with closed vocabularies.
+- **GATE 1 -- coverage validity (core)**: batchRoot recompute (RFC 6962,
+  domain separated) checked against the carried `batchRoot`, run-binding
+  derivation and the anti-splice equality on every covering record,
+  per-`aeeKind` constraints for `interception`/`arming`/`sealed`/
+  `examination`, class-match per row, the method cap by weakest covering
+  `aeeMethod`, the clean-row/interception contradiction, the
+  unresolved-interception requirement, and the sealed-record
+  existence+`aeeObservedSet` requirement -- all enforced via real `require()`
+  checks (`gate1.py`), invoked from `aee_verify.py`. A statement carrying
+  `basis: substrate` rows is therefore checked at both GATE 0 and GATE 1
+  today, not GATE 0 alone.
 
 ## Not implemented at this submission
 
-- **GATE 1 -- coverage validity** (batchRoot/RFC 6962 recompute with domain
-  separation, run-binding derivation and the anti-splice equality on every
-  covering record, per-`aeeKind` constraints for `interception`/`arming`/
-  `sealed`/`examination`, the method cap by weakest covering `aeeMethod`,
-  the six statement-wide coverage-validity requirements). A statement
-  carrying `basis: substrate` rows is therefore checked only at GATE 0 today
-  -- this build does not yet confirm the records it points at cover what the
-  rows claim.
+- **GATE 1 -- a short list of finer joint checks**: the joint
+  posture-equality check between a sealed record and every arming record a
+  *specific row* resolves (as opposed to the pinned-digest equality, which
+  is checked), `aeeDropBound` interaction, and the two
+  `aeeAssessedAttacks`/`aeeObservedAttacks` edge cases beyond their basic
+  subset/obligation rules. GATE 1's core, above, is implemented -- this is
+  what remains deferred within it.
 - **GATE 2 -- real evidence tier**: DSSE PAE verification against
   consumer-pinned Ed25519 keys is not implemented. `derive_tiers()` always
   returns `declared` for `basis: artifact` rows and `unattested` for
